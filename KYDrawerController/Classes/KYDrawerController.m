@@ -23,8 +23,6 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
 
 @property (strong, nonatomic) UIView *containerView;
 
-@property (assign, nonatomic, getter=isScreenEdgePanGestreEnabled) BOOL screenEdgePanGestreEnabled;
-
 @property (strong, nonatomic) UIScreenEdgePanGestureRecognizer *screenEdgePanGesture;
 
 @property (strong, nonatomic) UIPanGestureRecognizer *panGesture;
@@ -114,7 +112,7 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
               if (self.drawerDirection == KYDrawerControllerDrawerDirectionLeft) {
                   constant = self.drawerWidth;
               }
-              else if (self.drawerDirection == KYDrawerControllerDrawerDirectionRight) {
+              else {
                   constant = -self.drawerWidth;
               }
               self.drawerConstraint.constant = constant;
@@ -162,7 +160,7 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
         constant = fmin(self.drawerConstraint.constant + delta, self.drawerWidth);
         backGroundAlpha = fmin(kContainerViewMaxAlpha, kContainerViewMaxAlpha * fabs(constant) / self.drawerWidth);
     }
-    else if (self.drawerDirection == KYDrawerControllerDrawerDirectionRight) {
+    else {
         drawerState = self.panDelta > 0 ? KYDrawerControllerDrawerStateClosed : KYDrawerControllerDrawerStateOpened;
         constant = fmax(self.drawerConstraint.constant + delta, -self.drawerWidth);
         backGroundAlpha = fmin(kContainerViewMaxAlpha, kContainerViewMaxAlpha * fabs(constant) / self.drawerWidth);
@@ -264,7 +262,7 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
         itemAttribute = NSLayoutAttributeRight;
         toItemAttribute = NSLayoutAttributeLeft;
     }
-    else if (self.drawerDirection == KYDrawerControllerDrawerDirectionRight) {
+    else {
         itemAttribute = NSLayoutAttributeLeft;
         toItemAttribute = NSLayoutAttributeRight;
     }

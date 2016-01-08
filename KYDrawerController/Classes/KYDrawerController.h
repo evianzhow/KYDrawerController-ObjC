@@ -35,6 +35,8 @@ typedef NS_ENUM(NSUInteger, KYDrawerControllerDrawerDirection) { KYDrawerControl
 
 @property (assign, nonatomic) CGFloat drawerWidth;
 
+@property (assign, nonatomic, getter=isScreenEdgePanGestreEnabled) BOOL screenEdgePanGestreEnabled;
+
 - (instancetype)initWithDrawerDirection:(KYDrawerControllerDrawerDirection)drawerDirection drawerWidth:(CGFloat)drawerWidth;
 
 - (void)setDrawerState:(KYDrawerControllerDrawerState)drawerState animated:(BOOL)animated;
