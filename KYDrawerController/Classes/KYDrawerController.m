@@ -117,8 +117,8 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
               }
               self.drawerConstraint.constant = constant;
               self.containerView.backgroundColor = [UIColor colorWithWhite:0 alpha:kContainerViewMaxAlpha];
-              [self.containerView layoutIfNeeded];
           }
+          [self.containerView layoutIfNeeded];
         }
         completion:^(BOOL finished) {
           if (drawerState == KYDrawerControllerDrawerStateClosed) {
