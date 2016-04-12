@@ -91,6 +91,14 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
         addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_containerView]-0-|" options:kNilOptions metrics:nil views:viewDictionary]];
 
     self.containerView.hidden = YES;
+    
+    if (self.mainSegueIdentifier) {
+        [self performSegueWithIdentifier:self.mainSegueIdentifier sender:self];
+    }
+    
+    if (self.drawerSegueIdentifier) {
+        [self performSegueWithIdentifier:self.drawerSegueIdentifier sender:self];
+    }
 }
 
 - (void)setDrawerState:(KYDrawerControllerDrawerState)drawerState animated:(BOOL)animated

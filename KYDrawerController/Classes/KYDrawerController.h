@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class KYDrawerController;
 
 typedef NS_ENUM(NSUInteger, KYDrawerControllerDrawerState) { KYDrawerControllerDrawerStateOpened, KYDrawerControllerDrawerStateClosed };
@@ -23,11 +25,15 @@ typedef NS_ENUM(NSUInteger, KYDrawerControllerDrawerDirection) { KYDrawerControl
 
 @interface KYDrawerController : UIViewController
 
+@property (copy, nonatomic, nullable) IBInspectable NSString *mainSegueIdentifier;
+
+@property (copy, nonatomic, nullable) IBInspectable NSString *drawerSegueIdentifier;
+
 @property (strong, nonatomic) UIViewController *mainViewController;
 
 @property (strong, nonatomic) UIViewController *drawerViewController;
 
-@property (weak, nonatomic) id<KYDrawerControllerDelegate> delegate;
+@property (weak, nonatomic, nullable) id<KYDrawerControllerDelegate> delegate;
 
 @property (assign, nonatomic) KYDrawerControllerDrawerState drawerState;
 
@@ -42,3 +48,5 @@ typedef NS_ENUM(NSUInteger, KYDrawerControllerDrawerDirection) { KYDrawerControl
 - (void)setDrawerState:(KYDrawerControllerDrawerState)drawerState animated:(BOOL)animated;
 
 @end
+
+NS_ASSUME_NONNULL_END
