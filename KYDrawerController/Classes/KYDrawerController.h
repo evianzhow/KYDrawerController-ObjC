@@ -29,6 +29,10 @@ typedef NS_ENUM(NSUInteger, KYDrawerControllerDrawerDirection) { KYDrawerControl
 
 @property (copy, nonatomic, nullable) IBInspectable NSString *drawerSegueIdentifier;
 
+@property (assign, nonatomic) IBInspectable CGFloat containerViewMaxAlpha;
+
+@property (assign, nonatomic) IBInspectable NSTimeInterval drawerAnimationDuration;
+
 @property (strong, nonatomic) UIViewController *mainViewController;
 
 @property (strong, nonatomic) UIViewController *drawerViewController;

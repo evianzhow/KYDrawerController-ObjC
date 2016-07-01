@@ -71,6 +71,9 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
 
 - (void)_commonInit
 {
+    _containerViewMaxAlpha = kContainerViewMaxAlpha;
+    _drawerAnimationDuration = kDrawerAnimationDuration;
+    
     _drawerWidth = 280.0f;
     _screenEdgePanGestreEnabled = YES;
     _drawerDirection = KYDrawerControllerDrawerDirectionLeft;
@@ -105,7 +108,7 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
 {
     self.containerView.hidden = NO;
 
-    NSTimeInterval duration = animated ? kDrawerAnimationDuration : 0;
+    NSTimeInterval duration = animated ? self.drawerAnimationDuration : 0;
 
     [UIView animateWithDuration:duration
         delay:0
@@ -124,7 +127,7 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
                   constant = -self.drawerWidth;
               }
               self.drawerConstraint.constant = constant;
-              self.containerView.backgroundColor = [UIColor colorWithWhite:0 alpha:kContainerViewMaxAlpha];
+              self.containerView.backgroundColor = [UIColor colorWithWhite:0 alpha:self.containerViewMaxAlpha];
           }
           [self.containerView layoutIfNeeded];
         }
@@ -166,12 +169,12 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
     if (self.drawerDirection == KYDrawerControllerDrawerDirectionLeft) {
         drawerState = self.panDelta < 0 ? KYDrawerControllerDrawerStateClosed : KYDrawerControllerDrawerStateOpened;
         constant = fmin(self.drawerConstraint.constant + delta, self.drawerWidth);
-        backGroundAlpha = fmin(kContainerViewMaxAlpha, kContainerViewMaxAlpha * fabs(constant) / self.drawerWidth);
+        backGroundAlpha = fmin(self.containerViewMaxAlpha, self.containerViewMaxAlpha * fabs(constant) / self.drawerWidth);
     }
     else {
         drawerState = self.panDelta > 0 ? KYDrawerControllerDrawerStateClosed : KYDrawerControllerDrawerStateOpened;
         constant = fmax(self.drawerConstraint.constant + delta, -self.drawerWidth);
-        backGroundAlpha = fmin(kContainerViewMaxAlpha, kContainerViewMaxAlpha * fabs(constant) / self.drawerWidth);
+        backGroundAlpha = fmin(self.containerViewMaxAlpha, self.containerViewMaxAlpha * fabs(constant) / self.drawerWidth);
     }
 
     self.drawerConstraint.constant = constant;
