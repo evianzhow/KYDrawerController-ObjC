@@ -217,9 +217,9 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
         return;
     }
 
-    _mainViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
-
     [self addChildViewController:_mainViewController];
+
+    _mainViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view insertSubview:_mainViewController.view atIndex:0];
 
     NSDictionary *viewDictionary = @{ @"mainView" : _mainViewController.view };
@@ -261,7 +261,13 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
         return;
     }
 
-    NSDictionary *viewDictionary = @{ @"drawerView" : _drawerViewController.view };
+    [self addChildViewController:_drawerViewController];
+    
+    _drawerViewController.view.layer.shadowColor = [UIColor blackColor].CGColor;
+    _drawerViewController.view.layer.shadowOpacity = 0.4f;
+    _drawerViewController.view.layer.shadowRadius = 5.0f;
+    _drawerViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.containerView addSubview:_drawerViewController.view];
 
     NSLayoutAttribute itemAttribute;
     NSLayoutAttribute toItemAttribute;
@@ -274,14 +280,8 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
         itemAttribute = NSLayoutAttributeLeft;
         toItemAttribute = NSLayoutAttributeRight;
     }
-
-    _drawerViewController.view.layer.shadowColor = [UIColor blackColor].CGColor;
-    _drawerViewController.view.layer.shadowOpacity = 0.4f;
-    _drawerViewController.view.layer.shadowRadius = 5.0f;
-    _drawerViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
-
-    [self addChildViewController:_drawerViewController];
-    [self.containerView addSubview:_drawerViewController.view];
+   
+    NSDictionary *viewDictionary = @{ @"drawerView" : _drawerViewController.view };
 
     self.drawerWidthConstraint = [NSLayoutConstraint constraintWithItem:_drawerViewController.view
                                                               attribute:NSLayoutAttributeWidth
