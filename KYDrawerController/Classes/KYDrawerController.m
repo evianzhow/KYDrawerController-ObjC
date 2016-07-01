@@ -23,9 +23,9 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
 
 @property (strong, nonatomic) UIView *containerView;
 
-@property (strong, nonatomic) UIScreenEdgePanGestureRecognizer *screenEdgePanGesture;
+@property (readwrite, strong, nonatomic) UIScreenEdgePanGestureRecognizer *screenEdgePanGesture;
 
-@property (strong, nonatomic) UIPanGestureRecognizer *panGesture;
+@property (readwrite, strong, nonatomic) UIPanGestureRecognizer *panGesture;
 
 @end
 
