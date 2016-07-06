@@ -25,7 +25,7 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
 
 /// Returns `true` if `beginAppearanceTransition()` has been called with `true` as the first parameter, and `false`
 /// if the first parameter is `false`. Returns `nil` if appearance transition is not in progress.
-@property (assign, nonatomic) BOOL isAppearing;
+@property (strong, nonatomic) NSNumber *isAppearing;
 
 @property (readwrite, strong, nonatomic) UIScreenEdgePanGestureRecognizer *screenEdgePanGesture;
 
@@ -145,8 +145,8 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
     NSTimeInterval duration = animated ? self.drawerAnimationDuration : 0;
     
     BOOL isAppearing = drawerState == KYDrawerControllerDrawerStateOpened;
-    if (_isAppearing != isAppearing) {
-        _isAppearing = isAppearing;
+    if (!_isAppearing || [_isAppearing boolValue] != isAppearing) {
+        _isAppearing = @(isAppearing);
         [self.drawerViewController beginAppearanceTransition:isAppearing animated:animated];
         [self.mainViewController beginAppearanceTransition:!isAppearing animated:animated];
     }
@@ -178,7 +178,7 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
           }
           [self.drawerViewController endAppearanceTransition];
           [self.mainViewController endAppearanceTransition];
-          self.isAppearing = NO;
+          self.isAppearing = nil;
           if ([self.delegate respondsToSelector:@selector(drawerController:stateDidChange:)]) {
               [self.delegate drawerController:self stateDidChange:drawerState];
           }
@@ -226,8 +226,8 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
 
     if (gesture.state == UIGestureRecognizerStateChanged) {
         BOOL isAppearing = drawerState != KYDrawerControllerDrawerStateOpened;
-        if (_isAppearing != isAppearing) {
-            _isAppearing = isAppearing;
+        if (_isAppearing == nil) {
+            _isAppearing = @(isAppearing);
             [self.drawerViewController beginAppearanceTransition:isAppearing animated:YES];
             [self.mainViewController beginAppearanceTransition:!isAppearing animated:YES];
         }
