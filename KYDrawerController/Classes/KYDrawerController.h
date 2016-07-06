@@ -49,6 +49,8 @@ typedef NS_ENUM(NSUInteger, KYDrawerControllerDrawerDirection) { KYDrawerControl
 
 @property (assign, nonatomic, getter=isScreenEdgePanGestreEnabled) BOOL screenEdgePanGestreEnabled;
 
+@property (strong, nonatomic) UITapGestureRecognizer *containerViewTapGesture;
+
 @property (readonly, nonatomic) UIScreenEdgePanGestureRecognizer *screenEdgePanGesture;
 
 @property (readonly, nonatomic) UIPanGestureRecognizer *panGesture;

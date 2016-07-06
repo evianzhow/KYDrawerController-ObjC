@@ -37,6 +37,7 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
 
 @synthesize screenEdgePanGesture = _screenEdgePanGesture;
 @synthesize panGesture = _panGesture;
+@synthesize containerViewTapGesture = _containerViewTapGesture;
 
 - (void)awakeFromNib
 {
@@ -398,15 +399,30 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
     if (!_containerView) {
         UIView *view = [[UIView alloc] initWithFrame:self.view.frame];
 
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapContainerView:)];
         view.translatesAutoresizingMaskIntoConstraints = NO;
         view.backgroundColor = [UIColor clearColor];
-        [view addGestureRecognizer:tapGesture];
-        tapGesture.delegate = self;
+        [view addGestureRecognizer:self.containerViewTapGesture];
 
         _containerView = view;
     }
     return _containerView;
+}
+
+- (UITapGestureRecognizer *)containerViewTapGesture
+{
+    if (!_containerViewTapGesture) {
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapContainerView:)];
+        tapGesture.delegate = self;
+        _containerViewTapGesture = tapGesture;
+    }
+    return _containerViewTapGesture;
+}
+
+- (void)setContainerViewTapGesture:(UITapGestureRecognizer *)containerViewTapGesture
+{
+    _containerViewTapGesture != nil ? ([self.containerView removeGestureRecognizer:_containerViewTapGesture]) : nil;
+    _containerViewTapGesture = containerViewTapGesture;
+    [self.containerView addGestureRecognizer:_containerViewTapGesture];
 }
 
 - (UIScreenEdgePanGestureRecognizer *)screenEdgePanGesture
