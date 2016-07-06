@@ -23,6 +23,10 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
 
 @property (strong, nonatomic) UIView *containerView;
 
+/// Returns `true` if `beginAppearanceTransition()` has been called with `true` as the first parameter, and `false`
+/// if the first parameter is `false`. Returns `nil` if appearance transition is not in progress.
+@property (assign, nonatomic) BOOL isAppearing;
+
 @property (readwrite, strong, nonatomic) UIScreenEdgePanGestureRecognizer *screenEdgePanGesture;
 
 @property (readwrite, strong, nonatomic) UIPanGestureRecognizer *panGesture;
@@ -104,11 +108,47 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.displayingViewController beginAppearanceTransition:YES animated:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self.displayingViewController endAppearanceTransition];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self.displayingViewController beginAppearanceTransition:NO animated:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [self.displayingViewController endAppearanceTransition];
+}
+
+- (BOOL)shouldAutomaticallyForwardAppearanceMethods
+{
+    return NO;
+}
+
 - (void)setDrawerState:(KYDrawerControllerDrawerState)drawerState animated:(BOOL)animated
 {
     self.containerView.hidden = NO;
 
     NSTimeInterval duration = animated ? self.drawerAnimationDuration : 0;
+    
+    BOOL isAppearing = drawerState == KYDrawerControllerDrawerStateOpened;
+    if (_isAppearing != isAppearing) {
+        _isAppearing = isAppearing;
+        [self.drawerViewController beginAppearanceTransition:isAppearing animated:animated];
+        [self.mainViewController beginAppearanceTransition:!isAppearing animated:animated];
+    }
 
     [UIView animateWithDuration:duration
         delay:0
@@ -135,6 +175,9 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
           if (drawerState == KYDrawerControllerDrawerStateClosed) {
               self.containerView.hidden = YES;
           }
+          [self.drawerViewController endAppearanceTransition];
+          [self.mainViewController endAppearanceTransition];
+          self.isAppearing = NO;
           if ([self.delegate respondsToSelector:@selector(drawerController:stateDidChange:)]) {
               [self.delegate drawerController:self stateDidChange:drawerState];
           }
@@ -167,12 +210,12 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
     KYDrawerControllerDrawerState drawerState = KYDrawerControllerDrawerStateOpened;
 
     if (self.drawerDirection == KYDrawerControllerDrawerDirectionLeft) {
-        drawerState = self.panDelta < 0 ? KYDrawerControllerDrawerStateClosed : KYDrawerControllerDrawerStateOpened;
+        drawerState = self.panDelta <= 0 ? KYDrawerControllerDrawerStateClosed : KYDrawerControllerDrawerStateOpened;
         constant = fmin(self.drawerConstraint.constant + delta, self.drawerWidth);
         backGroundAlpha = fmin(self.containerViewMaxAlpha, self.containerViewMaxAlpha * fabs(constant) / self.drawerWidth);
     }
     else {
-        drawerState = self.panDelta > 0 ? KYDrawerControllerDrawerStateClosed : KYDrawerControllerDrawerStateOpened;
+        drawerState = self.panDelta >= 0 ? KYDrawerControllerDrawerStateClosed : KYDrawerControllerDrawerStateOpened;
         constant = fmax(self.drawerConstraint.constant + delta, -self.drawerWidth);
         backGroundAlpha = fmin(self.containerViewMaxAlpha, self.containerViewMaxAlpha * fabs(constant) / self.drawerWidth);
     }
@@ -181,6 +224,13 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
     self.containerView.backgroundColor = [UIColor colorWithWhite:0 alpha:backGroundAlpha];
 
     if (gesture.state == UIGestureRecognizerStateChanged) {
+        BOOL isAppearing = drawerState != KYDrawerControllerDrawerStateOpened;
+        if (_isAppearing != isAppearing) {
+            _isAppearing = isAppearing;
+            [self.drawerViewController beginAppearanceTransition:isAppearing animated:YES];
+            [self.mainViewController beginAppearanceTransition:!isAppearing animated:YES];
+        }
+        
         self.panStartLocation = [gesture locationInView:self.view];
         self.panDelta = delta;
     }
@@ -203,6 +253,18 @@ static NSTimeInterval const kDrawerAnimationDuration = 0.25;
 }
 
 #pragma mark - Getters & Setters
+
+- (UIViewController *)displayingViewController
+{
+    switch (self.drawerState) {
+        case KYDrawerControllerDrawerStateClosed:
+            return self.mainViewController;
+        case KYDrawerControllerDrawerStateOpened:
+            return self.drawerViewController;
+        default:
+            return nil;
+    }
+}
 
 - (void)setMainViewController:(UIViewController *)mainViewController
 {

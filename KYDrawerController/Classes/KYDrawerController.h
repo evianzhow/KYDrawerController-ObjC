@@ -37,6 +37,8 @@ typedef NS_ENUM(NSUInteger, KYDrawerControllerDrawerDirection) { KYDrawerControl
 
 @property (strong, nonatomic) UIViewController *drawerViewController;
 
+@property (readonly, nonatomic) UIViewController *displayingViewController;
+
 @property (weak, nonatomic, nullable) id<KYDrawerControllerDelegate> delegate;
 
 @property (assign, nonatomic) KYDrawerControllerDrawerState drawerState;
